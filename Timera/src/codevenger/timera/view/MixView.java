@@ -19,6 +19,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -73,13 +74,25 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		holder.addCallback(this);
 	}
 
+	public void save(Canvas canvas) {
+		Paint fgPaint = new Paint();
+		fgPaint.setAlpha(fgAlpha);
+		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
+				background.getHeight()), new Rect(0, 0, screenWidth,
+				screenHeight), null);
+		// foreground = cropped;
+		canvas.drawBitmap(cropped,
+				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
+				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
+	}
+
 	public void render(Canvas canvas) {
 		Paint fgPaint = new Paint();
 		fgPaint.setAlpha(fgAlpha);
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
-		//foreground = cropped;
+		// foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
@@ -91,7 +104,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
-		//foreground = cropped;
+		// foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
@@ -147,14 +160,8 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		case MotionEvent.ACTION_UP:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
-			// blur here
-			//Bitmap temp = Bitmap.createBitmap(screenWidth, screenHeight,
-			//		Config.ARGB_8888);
-			Bitmap temp = cropBitmap();
-			Canvas tc = new Canvas(temp);
-			render(tc, 255);
-			cropped = ImageProcess.pathGaussianBlur(temp, points, 100);
 			points = null;
+			cropped = cropBitmap();
 			break;
 		default:
 			break;
@@ -165,22 +172,42 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public void surfaceCreated(final SurfaceHolder holder) {
-		screenWidth = getWidth();
-		screenHeight = getHeight() - PADDING_TOP - PADDING_BOTTOM;
-		background = Bitmap.createScaledBitmap(
-				BitmapTools.decodeSampledBitmapFromFile(pathA, 720, 1280),
-				screenWidth, screenHeight, false);
+		new AsyncTask<Void, Void, Void>() {
 
-		foreground = Bitmap.createScaledBitmap(
-				BitmapTools.decodeSampledBitmapFromFile(pathB, 720, 1280),
-				screenWidth, screenHeight, false);
-		cropped = cropBitmap();
+			ProgressDialog dialog = new ProgressDialog(context);
 
-		running = true;
-		renderThread = new Thread(new RenderThread());
-		renderThread.start();
+			@Override
+			protected void onPreExecute() {
+				dialog.setMessage("Loading");
+				dialog.show();
+			}
 
-		setOnTouchListener(this);
+			@Override
+			protected Void doInBackground(Void... params) {
+				screenWidth = getWidth();
+				screenHeight = getHeight() - PADDING_TOP - PADDING_BOTTOM;
+				background = Bitmap.createScaledBitmap(BitmapTools
+						.decodeSampledBitmapFromFile(pathA, 720, 1280),
+						screenWidth, screenHeight, false);
+
+				foreground = Bitmap.createScaledBitmap(BitmapTools
+						.decodeSampledBitmapFromFile(pathB, 720, 1280),
+						screenWidth, screenHeight, false);
+				cropped = cropBitmap();
+
+				running = true;
+				renderThread = new Thread(new RenderThread());
+				renderThread.start();
+
+				setOnTouchListener(MixView.this);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				dialog.dismiss();
+			}
+		}.execute();
 	}
 
 	public void undo() {
@@ -241,16 +268,140 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
+	public void reload() {
+		new AsyncTask<Void, Void, Void>() {
+
+			ProgressDialog dialog = new ProgressDialog(context);
+
+			@Override
+			protected void onPreExecute() {
+				dialog.setTitle("None");
+				dialog.setMessage("Processing...");
+				dialog.show();
+			}
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				switch (selected) {
+				case 0:
+					background = Bitmap.createScaledBitmap(BitmapTools
+							.decodeSampledBitmapFromFile(pathA, 720, 1280),
+							screenWidth, screenHeight, false);
+					break;
+				case 1:
+					foreground = Bitmap.createScaledBitmap(BitmapTools
+							.decodeSampledBitmapFromFile(pathB, 720, 1280),
+							screenWidth, screenHeight, false);
+					cropped = cropBitmap();
+					break;
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				dialog.dismiss();
+			}
+		}.execute();
+	}
+
 	public void toGray() {
-		background = ImageProcess.toGrayscale(background);
+		new AsyncTask<Void, Void, Void>() {
+
+			ProgressDialog dialog = new ProgressDialog(context);
+
+			@Override
+			protected void onPreExecute() {
+				dialog.setTitle("Gray");
+				dialog.setMessage("Processing...");
+				dialog.show();
+			}
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				switch (selected) {
+				case 0:
+					background = ImageProcess.toGrayscale(background);
+					break;
+				case 1:
+					foreground = ImageProcess.toGrayscale(foreground);
+					cropped = cropBitmap();
+					break;
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				dialog.dismiss();
+			}
+		}.execute();
 	}
 
 	public void toYellow() {
-		background = ImageProcess.yellowEffect(background);
+		new AsyncTask<Void, Void, Void>() {
+
+			ProgressDialog dialog = new ProgressDialog(context);
+
+			@Override
+			protected void onPreExecute() {
+				dialog.setTitle("Nostalgic");
+				dialog.setMessage("Processing...");
+				dialog.show();
+			}
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				switch (selected) {
+				case 0:
+					background = ImageProcess.yellowEffect(background);
+					break;
+				case 1:
+					foreground = ImageProcess.yellowEffect(foreground);
+					cropped = cropBitmap();
+					break;
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				dialog.dismiss();
+			}
+		}.execute();
 	}
 
 	public void toLomo() {
-		background = ImageProcess.lomoEffect(background);
+		new AsyncTask<Void, Void, Void>() {
+
+			ProgressDialog dialog = new ProgressDialog(context);
+
+			@Override
+			protected void onPreExecute() {
+				dialog.setTitle("Lomo");
+				dialog.setMessage("Processing...");
+				dialog.show();
+			}
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				switch (selected) {
+				case 0:
+					background = ImageProcess.lomoEffect(background);
+					break;
+				case 1:
+					foreground = ImageProcess.lomoEffect(foreground);
+					cropped = cropBitmap();
+					break;
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				dialog.dismiss();
+			}
+		}.execute();
 	}
 
 }

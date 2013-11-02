@@ -9,7 +9,6 @@ import codevenger.timera.utility.PathTools;
 import codevenger.timera.view.MixView;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Bitmap.CompressFormat;
@@ -117,6 +116,7 @@ public class MixActivity extends Activity implements OnClickListener,
 		seekBarAlpha.setProgress(200);
 		seekBarAlpha.setOnSeekBarChangeListener(this);
 
+		selectImage(0);
 		setMode(MixView.MODE_FILTER);
 	}
 
@@ -129,6 +129,7 @@ public class MixActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.mix_img_b:
 			selectImage(1);
+			setMode(MixView.MODE_FILTER);
 			break;
 		case R.id.mix_img_c:
 			selectImage(2);
@@ -142,7 +143,7 @@ public class MixActivity extends Activity implements OnClickListener,
 			Bitmap output = Bitmap.createBitmap(mixView.getWidth(),
 					mixView.getHeight(), Config.ARGB_8888);
 			Canvas outputCanvas = new Canvas(output);
-			mixView.render(outputCanvas);
+			mixView.save(outputCanvas);
 			File file = PathTools.getNewMixedFile();
 			try {
 				FileOutputStream outputStream = new FileOutputStream(file);
@@ -173,6 +174,7 @@ public class MixActivity extends Activity implements OnClickListener,
 			mixView.undo();
 			break;
 		case R.id.mix_filter_none:
+			mixView.reload();
 			break;
 		case R.id.mix_filter_gray:
 			mixView.toGray();
@@ -215,13 +217,11 @@ public class MixActivity extends Activity implements OnClickListener,
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -293,7 +293,7 @@ public class MixActivity extends Activity implements OnClickListener,
 			modeFilter.setBackgroundResource(R.drawable.mix_fliter);
 			modeAlpha.setBackgroundResource(R.drawable.mix_alpha);
 			modeErase.setBackgroundResource(R.drawable.mix_press_erase);
-			bottomShadow.setVisibility(View.INVISIBLE);
+			bottomShadow.setVisibility(View.VISIBLE);
 			break;
 		case MixView.MODE_SCALE:
 			mixView.setMode(MixView.MODE_SCALE);
@@ -309,6 +309,43 @@ public class MixActivity extends Activity implements OnClickListener,
 
 	private void setStroke(int level) {
 		mixView.setStrokeWidth(20 + level * 70);
+		switch (level) {
+		case 0:
+			stroke1.setBackgroundResource(R.drawable.mix_press_stroke);
+			stroke2.setBackgroundResource(R.drawable.mix_stroke);
+			stroke3.setBackgroundResource(R.drawable.mix_stroke);
+			stroke4.setBackgroundResource(R.drawable.mix_stroke);
+			stroke5.setBackgroundResource(R.drawable.mix_stroke);
+			break;
+		case 1:
+			stroke1.setBackgroundResource(R.drawable.mix_stroke);
+			stroke2.setBackgroundResource(R.drawable.mix_press_stroke);
+			stroke3.setBackgroundResource(R.drawable.mix_stroke);
+			stroke4.setBackgroundResource(R.drawable.mix_stroke);
+			stroke5.setBackgroundResource(R.drawable.mix_stroke);
+			break;
+		case 2:
+			stroke1.setBackgroundResource(R.drawable.mix_stroke);
+			stroke2.setBackgroundResource(R.drawable.mix_stroke);
+			stroke3.setBackgroundResource(R.drawable.mix_press_stroke);
+			stroke4.setBackgroundResource(R.drawable.mix_stroke);
+			stroke5.setBackgroundResource(R.drawable.mix_stroke);
+			break;
+		case 3:
+			stroke1.setBackgroundResource(R.drawable.mix_stroke);
+			stroke2.setBackgroundResource(R.drawable.mix_stroke);
+			stroke3.setBackgroundResource(R.drawable.mix_stroke);
+			stroke4.setBackgroundResource(R.drawable.mix_press_stroke);
+			stroke5.setBackgroundResource(R.drawable.mix_stroke);
+			break;
+		case 4:
+			stroke1.setBackgroundResource(R.drawable.mix_stroke);
+			stroke2.setBackgroundResource(R.drawable.mix_stroke);
+			stroke3.setBackgroundResource(R.drawable.mix_stroke);
+			stroke4.setBackgroundResource(R.drawable.mix_stroke);
+			stroke5.setBackgroundResource(R.drawable.mix_press_stroke);
+			break;
+		}
 	}
 
 }

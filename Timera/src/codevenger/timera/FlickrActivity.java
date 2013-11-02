@@ -65,7 +65,7 @@ public class FlickrActivity extends Activity {
 				e.printStackTrace();
 			}
 			url = OAuthFlickrService.authorizationUrl;
-			Log.d("timera", url);
+//			Log.d("timera", url);
 			Intent intent = new Intent();
 			intent.setClass(FlickrActivity.this, FlickrWebActivity.class);
 			startActivityForResult(intent, EDIT);

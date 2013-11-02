@@ -13,9 +13,10 @@
 
         <Button
             android:id="@+id/camera_shoot"
+            style="@style/CameraButtonShoot"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="shoot" />
+            android:layout_height="80dp" />
+
     </LinearLayout>
 
     <SeekBar

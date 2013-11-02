@@ -82,13 +82,14 @@ public class CameraActivity extends Activity implements OnClickListener,
 		cameraLayout.addView(cameraView);
 		controlLayout.bringToFront();
 		overlayLayout.bringToFront();
-		alpha.setMax(100);
+		alpha.setMax(80);
 		alpha.setProgress(40);
 		alpha.setOnSeekBarChangeListener(this);
 		zoom.setMax(camera.getParameters().getMaxZoom());
 		zoom.setProgress(0);
 		zoom.setOnSeekBarChangeListener(this);
 		shoot.setOnClickListener(this);
+		shoot.setAlpha(0.75f);
 
 		String overlayPath = getIntent().getStringExtra(DATA_OVERLAY);
 		if (overlayPath != null) {

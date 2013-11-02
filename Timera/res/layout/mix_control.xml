@@ -94,32 +94,28 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_filter_circle"
-            android:text="none" />
+            android:background="@drawable/mix_filter_none" />
 
         <Button
             android:id="@+id/mix_filter_gray"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_filter_circle"
-            android:text="gray" />
+            android:background="@drawable/mix_filter_black" />
 
         <Button
             android:id="@+id/mix_filter_yellow"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_filter_circle"
-            android:text="yell" />
+            android:background="@drawable/mix_filter_old" />
 
         <Button
             android:id="@+id/mix_filter_lomo"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_filter_circle"
-            android:text="lomo" />
+            android:background="@drawable/mix_filter_lomo" />
     </LinearLayout>
 
     <LinearLayout
@@ -158,35 +154,35 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_stroke_1" />
+            android:background="@drawable/mix_stroke" />
 
         <Button
             android:id="@+id/mix_stroke_2"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_stroke_2" />
+            android:background="@drawable/mix_stroke" />
 
         <Button
             android:id="@+id/mix_stroke_3"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_stroke_3" />
+            android:background="@drawable/mix_press_stroke" />
 
         <Button
             android:id="@+id/mix_stroke_4"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_stroke_4" />
+            android:background="@drawable/mix_stroke" />
 
         <Button
             android:id="@+id/mix_stroke_5"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/mix_stroke_5" />
+            android:background="@drawable/mix_stroke" />
     </LinearLayout>
 
     <ImageView
