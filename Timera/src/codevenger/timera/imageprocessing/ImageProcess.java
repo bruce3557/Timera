@@ -1,4 +1,4 @@
-package Codevenger.ImageProcessing;
+package codevenger.timera.imageprocessing;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
