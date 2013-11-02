@@ -84,6 +84,19 @@ public class FlickrActivity extends Activity {
 			}
 			decodeJSON();
 			upadteUI();
+		}else{
+			GetPhotoFlickrService getPhoto = new GetPhotoFlickrService();
+			try {
+				getPhoto.execute().get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			decodeJSON();
+			upadteUI();
 		}
 	}
 	@Override
@@ -256,7 +269,7 @@ public class FlickrActivity extends Activity {
 				imageView = new ImageView(mContext);
 				imageView.setLayoutParams(new GridView.LayoutParams(535, 300));
 				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-				imageView.setPadding(1, 1, 1, 1);
+				imageView.setPadding(2, 2, 2, 2);
 			} else {
 				imageView = (ImageView) convertView;
 			}
