@@ -3,29 +3,26 @@ package codevenger.timera.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import codevenger.timera.imageprocessing.ImageProcess;
-import codevenger.timera.utility.BitmapTools;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import codevenger.timera.imageprocessing.ImageProcess;
+import codevenger.timera.utility.BitmapTools;
 
 public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		OnTouchListener {
@@ -41,13 +38,16 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	public static final int FILTER_GRAY = 1;
 	public static final int FILTER_YELLOW = 2;
 	public static final int FILTER_LOMO = 3;
+	// private static final int PADDING_TOP = 46;
+	// private static final int PADDING_BOTTOM = 60;
 	private static final int PADDING_TOP = 0;
 	private static final int PADDING_BOTTOM = 0;
+	private static final float BLUR_WIDTH = 15;
 
 	private Context context;
-	private int selected, mode, filter;
+	private int selected, mode;
 	private String pathA, pathB;
-	private Bitmap background, foreground, cropped, oriFore;
+	private Bitmap background, foreground, cropped;
 	private int screenWidth, screenHeight;
 	private boolean running;
 	private Thread renderThread;
@@ -80,7 +80,6 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
-		// foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
@@ -89,43 +88,42 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	public void render(Canvas canvas) {
 		Paint fgPaint = new Paint();
 		fgPaint.setAlpha(fgAlpha);
-		canvas.drawBitmap(background, 
-				new Rect(0, 0, background.getWidth(), background.getHeight()), 
-				new Rect(0, PADDING_TOP, screenWidth, screenHeight), null);
-		//foreground = cropped;
-		canvas.drawBitmap(foreground,
-				new Rect(0, 0, foreground.getWidth(), foreground.getHeight()),
+		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
+				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
+				screenHeight), null);
+		canvas.drawBitmap(cropped,
+				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
 	}
 
 	public void render(Canvas canvas, int alpha) {
 		Paint fgPaint = new Paint();
-		//fgPaint.setAlpha(alpha);
+		fgPaint.setAlpha(alpha);
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
-
-		canvas.drawBitmap(foreground,
-				new Rect(0, 0, foreground.getWidth(), foreground.getHeight()),
+		canvas.drawBitmap(cropped,
+				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
 	}
 
 	private Bitmap cropBitmap() {
-		
 		Bitmap croppedBitmap = Bitmap.createBitmap(screenWidth, screenHeight,
 				Bitmap.Config.ARGB_8888);
 		Paint paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeCap(Paint.Cap.ROUND);
 		Canvas bitmapCanvas = new Canvas(croppedBitmap);
-		//bitmapCanvas.drawBitmap(foreground, 0, 0, paint);
-		//paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
-		//synchronized (paths) {
-		//	for (int i = 0; i < paths.size(); ++i) {
-		//		paint.setStrokeWidth(strokeWidths.get(i));
-		//		bitmapCanvas.drawPath(paths.get(i), paint);
-		//	}
-		//}
+		bitmapCanvas.drawBitmap(foreground, 0, 0, paint);
+		paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
+		paint.setMaskFilter(new BlurMaskFilter(BLUR_WIDTH,
+				BlurMaskFilter.Blur.NORMAL));
+		synchronized (paths) {
+			for (int i = 0; i < paths.size(); ++i) {
+				paint.setStrokeWidth(strokeWidths.get(i));
+				bitmapCanvas.drawPath(paths.get(i), paint);
+			}
+		}
 
 		return croppedBitmap;
 	}
@@ -161,15 +159,6 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		case MotionEvent.ACTION_UP:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
-			// blur here
-			Bitmap temp = Bitmap.createBitmap(screenWidth, screenHeight,
-					Config.ARGB_8888);
-			//Bitmap temp = cropBitmap();
-			Canvas tc = new Canvas(temp);
-			tc.drawBitmap(foreground,
-					new Rect(0, 0, foreground.getWidth(), foreground.getHeight()),
-					new Rect(0, PADDING_TOP, screenWidth, screenHeight), null);
-			foreground = ImageProcess.pathGaussianBlur(temp, points, strokeWidth);
 			points = null;
 			cropped = cropBitmap();
 			break;

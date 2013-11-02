@@ -38,14 +38,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		pickA = false;
 		pickB = false;
-
-		// Intent intent = new Intent(MainActivity.this, MixActivity.class);
-		// intent.putExtra(MixActivity.DATA_PATH_A,
-		// "/storage/emulated/0/DCIM/bagshaw_battaile_falls.jpg");
-		// intent.putExtra(MixActivity.DATA_PATH_B,
-		// "/storage/emulated/0/DCIM/bagshaw_ribbon_of_stone.jpg");
-		// startActivity(intent);
-		// finish();
 	}
 
 	@Override

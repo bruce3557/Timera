@@ -7,11 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import codevenger.timera.utility.BitmapTools;
-import codevenger.timera.utility.PathTools;
-import codevenger.timera.view.CameraView;
-
-import codevenger.timera.R;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -25,7 +20,6 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +32,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import codevenger.timera.utility.BitmapTools;
+import codevenger.timera.utility.PathTools;
+import codevenger.timera.view.CameraView;
 
 public class CameraActivity extends Activity implements OnClickListener,
 		OnTouchListener, OnSeekBarChangeListener {
@@ -82,13 +79,14 @@ public class CameraActivity extends Activity implements OnClickListener,
 		cameraLayout.addView(cameraView);
 		controlLayout.bringToFront();
 		overlayLayout.bringToFront();
-		alpha.setMax(80);
+		alpha.setMax(60);
 		alpha.setProgress(40);
 		alpha.setOnSeekBarChangeListener(this);
 		zoom.setMax(camera.getParameters().getMaxZoom());
 		zoom.setProgress(0);
 		zoom.setOnSeekBarChangeListener(this);
 		shoot.setOnClickListener(this);
+		shoot.bringToFront();
 		shoot.setAlpha(0.75f);
 
 		String overlayPath = getIntent().getStringExtra(DATA_OVERLAY);
