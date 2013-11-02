@@ -34,6 +34,8 @@ import codevenger.timera.authorization.OAuthFlickrService;
 import codevenger.timera.authorization.PhotoInform;
 
 public class FlickrActivity extends Activity {
+
+	public static final String DATA_PATH = "path";
 	String url;
 	String verifier;
 	private static final int EDIT = 1;
@@ -43,7 +45,8 @@ public class FlickrActivity extends Activity {
 	public ArrayList<ImageView> imageList = new ArrayList<ImageView>();
 	public ArrayList<Bitmap> bitmapList = new ArrayList<Bitmap>();
 	public ArrayList<PhotoInform> photoList = new ArrayList<PhotoInform>();
-	Bitmap fileToBeSaved=null;
+	Bitmap fileToBeSaved = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,7 +70,8 @@ public class FlickrActivity extends Activity {
 		intent.setClass(FlickrActivity.this, FlickrWebActivity.class);
 		startActivityForResult(intent, EDIT);
 	}
-	public void upadteUI(){
+
+	public void upadteUI() {
 		GridView gridview = (GridView) findViewById(R.id.gridView);
 		ImageAdapter ia = new ImageAdapter(this);
 		gridview.setAdapter(ia);
@@ -85,16 +89,17 @@ public class FlickrActivity extends Activity {
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				File dir = new File(Environment.getExternalStorageDirectory().toString()
-						+ "/Timera");
+				File dir = new File(Environment.getExternalStorageDirectory()
+						.toString() + "/Timera");
 				if (!dir.exists() || !dir.isDirectory()) {
 					dir.mkdir();
 				}
 				DownloadSingleImageTask newTask = new DownloadSingleImageTask();
 				DownloadImageTask downloadTask = new DownloadImageTask();
-				String originUrl = urlList.get(position).substring(0,57).concat("_b").concat(".jpg");
+				String originUrl = urlList.get(position).substring(0, 57)
+						.concat("_b").concat(".jpg");
 				try {
-					//downloadTask.execute().get();
+					// downloadTask.execute().get();
 					newTask.execute(originUrl).get();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -103,38 +108,48 @@ public class FlickrActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				FileOutputStream fos = null;
 				String fileName = originUrl.substring(35, 46).concat(".jpg");
-	             try {
-	            	 Log.d("Timera",dir.getAbsolutePath().concat("/").concat(fileName));
-	                 fos = new FileOutputStream(dir.getAbsolutePath().concat("/").concat(fileName));
-	                 
-	                 if(fileToBeSaved == null){
-	                	 Log.d("Timera","H");
-	                 }
-	                 if(fileToBeSaved.compress(Bitmap.CompressFormat.JPEG,100, fos)){
-	                	 Log.d("Timera","GAME");
-	                 }
-	                 Log.d("Timera",fos.toString());
-	                 fos.flush();
-	                 fos.close();
-	                 
-	              //   MediaStore.Images.Media.insertImage(getContentResolver(), b, "Screen", "screen");
-	             }catch (FileNotFoundException e) {
-	            	 Log.d("Timera","I");
-	                 e.printStackTrace();
-	             } catch (Exception e) {
-	            	 Log.d("Timera","J");
-	                 e.printStackTrace();
-	             }
-				Toast.makeText(FlickrActivity.this, urlList.get(position).substring(0,56).concat(".jpg"),
+				try {
+					Log.d("Timera",
+							dir.getAbsolutePath().concat("/").concat(fileName));
+					fos = new FileOutputStream(dir.getAbsolutePath()
+							.concat("/").concat(fileName));
+
+					if (fileToBeSaved == null) {
+						Log.d("Timera", "H");
+					}
+					if (fileToBeSaved.compress(Bitmap.CompressFormat.JPEG, 100,
+							fos)) {
+						Log.d("Timera", "GAME");
+					}
+					Log.d("Timera", fos.toString());
+					fos.flush();
+					fos.close();
+
+					Intent intent = new Intent();
+					intent.putExtra(DATA_PATH, dir.getAbsolutePath()
+							.concat("/").concat(fileName));
+					setResult(RESULT_OK, intent);
+					finish();
+					// MediaStore.Images.Media.insertImage(getContentResolver(),
+					// b, "Screen", "screen");
+				} catch (FileNotFoundException e) {
+					Log.d("Timera", "I");
+					e.printStackTrace();
+				} catch (Exception e) {
+					Log.d("Timera", "J");
+					e.printStackTrace();
+				}
+				Toast.makeText(FlickrActivity.this,
+						urlList.get(position).substring(0, 56).concat(".jpg"),
 						Toast.LENGTH_SHORT).show();
 			}
 		});
 
-		
 	}
+
 	public class ImageAdapter extends BaseAdapter {
 		private Context mContext;
 
@@ -187,7 +202,7 @@ public class FlickrActivity extends Activity {
 		protected void onPreExecute() {
 			pd = ProgressDialog.show(context, "downloading", "please wait");
 		}
-		
+
 		protected Bitmap doInBackground(String... urls) {
 			Bitmap mIcon11 = null;
 			for (String s : urlList) {
