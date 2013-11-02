@@ -286,48 +286,61 @@ public class ImageProcess {
 	@SuppressLint("UseValueOf")
 	public static Bitmap pathGaussianBlur(Bitmap src, List<Point> path, int radius) {
 		int width = src.getWidth();
+		int height = src.getHeight();
 		Bitmap result = src.copy(src.getConfig(), true);
-		Set<Integer> hash = new HashSet<Integer>();
-		int r = 5;
+		//Set<Integer> hash = new HashSet<Integer>();
+		//int r = 5;
 		
 		Log.d(null, "GO!");
 		Log.d(null, "SIZE = " + path.size());
-		Point prev = null;
+		//Point prev = null;
+		int lx, ly, rx, ry;
+		lx = width - 1;
+		ly = height - 1;
+		rx = ry = 0;
 		for(int i = 0;i < path.size(); ++i) {
 			Point p = path.get(i);
-			int cx = p.x - radius;
-			int cy = p.y - radius;
-			if( hash.contains(new Integer(cx * width + cy) ))	continue;
-			//Bitmap temp = guassianBlurMask(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1));
-			
-			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1), null, r);
-			for(int ta = 0;ta < radius * 2 + 1; ++ta)
-				for(int tb = 0;tb < radius * 2 + 1; ++tb) {
-					if(hash.contains(new Integer((cx + ta) * width + cy + tb)))	continue;
-					hash.add(new Integer((cx + ta) * width + cy + tb));
-					int nx = cx + ta;
-					int ny = cy + tb;
-					/*
-					int dpx = nx - p.x;
-					int dpy = ny - p.y;
-					int dv = radius * radius;
-					if( dpx * dpx + dpy * dpy <= 0.7 * dv )
-						continue;
-					if(prev != null && (nx - prev.x) * (nx - prev.x) + (ny - prev.y) * (ny - prev.y) < dv && 
-							dpx * dpx + dpy * dpy < dv)
-						continue;
-					*/
-
-					int pix = temp.getPixel(ta, tb);
-					int A = Color.alpha(pix);
+			//double r = Math.sqrt(radius * radius);
+			int cx = Math.max(p.x - radius, 0);
+			int cy = Math.max(p.y - radius, 0);
+			int dx = Math.min(p.x + radius, width-1);
+			int dy = Math.min(p.y + radius, height-1);
+			lx = Math.min(cx, lx);
+			ly = Math.min(cy, ly);
+			rx = Math.max(dx, rx);
+			ry = Math.max(dy, ry);
+			/*
+			for(int j = cx; j < dx; ++j)
+				for(int k = cy;k < dy; ++k) {
+					double dist = Math.sqrt((j - p.x) * (j - p.x) + (k - p.y) * (k - p.y));
+					double ratio = dist / radius;
+					if(ratio > 1)	continue;
+					//if(hash.contains(new Integer(k * width + j)))	continue;
+					//hash.add(new Integer(k * width + j));
+					int pix = src.getPixel(j, k);
+					int A = (int) (Color.alpha(pix) * (ratio * ratio));
 					int R = Color.red(pix);
 					int G = Color.green(pix);
 					int B = Color.blue(pix);
-					result.setPixel(cx + ta, cy + tb, Color.argb(A, R, G, B));
+					result.setPixel(j, k, Color.argb(A, R, G, B));
 				}
-			
-			prev = p;
+			*/
 		}
+		int mx = (lx + rx) / 2;
+		int my = (ly + ry) / 2;
+		double rds = Math.sqrt((rx - lx) * (rx - lx) / 4 + (ry - ly) * (ry - ly) / 4);
+		for(int i = lx;i < rx; ++i)
+			for(int j = ly;j < ry;++j) {
+				double dist = Math.sqrt((i - mx) * (i - mx) + (j - my) * (j - my));
+				double ratio = dist / rds;
+				if(ratio > 0.7)	continue;
+				int pix = src.getPixel(i, j);
+				int A = (int) (Color.alpha(pix) * (ratio * ratio));
+				int R = Color.red(pix);
+				int G = Color.green(pix);
+				int B = Color.blue(pix);
+				result.setPixel(i, j, Color.argb(A, R, G, B));
+			}
 		Log.d(null, "OAO!");
 		return result;
 	}
@@ -353,14 +366,14 @@ public class ImageProcess {
 		int height = src.getHeight();
 		Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
 		
-		for(int y = 0;y < height - 1; ++y)
-			for(int x = 0;x < width - 1; ++x) {
+		for(int y = 0;y < height; ++y)
+			for(int x = 0;x < width; ++x) {
 				int pix = src.getPixel(x, y);
 				int A = Color.alpha(pix);
 				int R = Color.red(pix);
 				int G = Color.green(pix);
 				int B = (int) (Color.blue(pix) * smoothFunc(Color.blue(pix) + 1, 256));
-				result.setPixel(x+1, y+1, Color.argb(A, R, G, B));
+				result.setPixel(x, y, Color.argb(A, R, G, B));
 				
 			}
 		
@@ -375,15 +388,16 @@ public class ImageProcess {
 		double r = Math.sqrt( width * width / 4 + height * height / 4);
 		Bitmap result = yellowEffect(src);
 		
-		for(int y = 0;y < height - 1; ++y)
-			for(int x = 0;x < width - 1; ++x) {
+		for(int y = 0;y < height; ++y)
+			for(int x = 0;x < width; ++x) {
 				double dist = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
 				double ratio = dist / r;
 				int pix = src.getPixel(x, y);
+				double dr = 1 - ratio * ratio;
 				int A = Color.alpha(pix);
-				int R = (int) (Color.red(pix) * (1 - ratio * ratio));
-				int G = (int) (Color.green(pix) * (1 - ratio * ratio));
-				int B = (int) (Color.blue(pix) * (1 - ratio * ratio));
+				int R = (int) (Color.red(pix) * dr);
+				int G = (int) (Color.green(pix) * dr);
+				int B = (int) (Color.blue(pix) * smoothFunc(Color.blue(pix) + 1, 256) * dr);
 				result.setPixel(x, y, Color.argb(A,  R, G, B));
 			}
 		

@@ -34,10 +34,12 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="codevenger.timera.CameraActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="codevenger.timera.MixActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" 
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="codevenger.timera.ResultActivity"
             android:screenOrientation="portrait"
