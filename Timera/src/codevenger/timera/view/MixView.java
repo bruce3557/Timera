@@ -3,12 +3,16 @@ package codevenger.timera.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import codevenger.timera.imageprocessing.ImageProcess;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
@@ -31,6 +35,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	public static final int MODE_ALPHA = 2;
 	public static final int MODE_ERASE = 3;
 
+	private Context context;
 	private int selected, mode;
 	private String pathA, pathB;
 	private Bitmap background, foreground, cropped;
@@ -47,6 +52,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public MixView(Context context, String imgA, String imgB) {
 		super(context);
+		this.context = context;
 		this.pathA = imgA;
 		this.pathB = imgB;
 		mode = MODE_SCALE;
@@ -62,6 +68,17 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	public void render(Canvas canvas) {
 		Paint fgPaint = new Paint();
 		fgPaint.setAlpha(fgAlpha);
+		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
+				background.getHeight()), new Rect(0, 0, screenWidth,
+				screenHeight), null);
+		canvas.drawBitmap(cropped,
+				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
+				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
+	}
+
+	public void render(Canvas canvas, int alpha) {
+		Paint fgPaint = new Paint();
+		fgPaint.setAlpha(alpha);
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
@@ -91,6 +108,17 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		switch (mode) {
+		case MODE_ERASE:
+			onTouchErase(event);
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+
+	public void onTouchErase(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();
 		switch (event.getAction()) {
@@ -104,18 +132,24 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		case MotionEvent.ACTION_MOVE:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
+			cropped = cropBitmap();
 			break;
 		case MotionEvent.ACTION_UP:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
 			// blur here
+			Bitmap temp = Bitmap.createBitmap(screenWidth, screenHeight,
+					Config.ARGB_8888);
+			Canvas tc = new Canvas(temp);
+			render(tc, 255);
+			cropped = ImageProcess.pathGaussianBlur(temp, points, 100);
 			points = null;
+			break;
+		default:
 			break;
 		}
 		preX = x;
 		preY = y;
-		cropped = cropBitmap();
-		return true;
 	}
 
 	@Override
