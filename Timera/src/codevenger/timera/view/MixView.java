@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codevenger.timera.imageprocessing.ImageProcess;
+import codevenger.timera.utility.BitmapTools;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,13 +31,20 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public static final int SELECT_A = 0;
 	public static final int SELECT_B = 1;
+	public static final int SELECT_C = 2;
 	public static final int MODE_SCALE = 0;
 	public static final int MODE_FILTER = 1;
 	public static final int MODE_ALPHA = 2;
 	public static final int MODE_ERASE = 3;
+	public static final int FILTER_NONE = 0;
+	public static final int FILTER_GRAY = 1;
+	public static final int FILTER_YELLOW = 2;
+	public static final int FILTER_LOMO = 3;
+	private static final int PADDING_TOP = 46;
+	private static final int PADDING_BOTTOM = 60;
 
 	private Context context;
-	private int selected, mode;
+	private int selected, mode, filter;
 	private String pathA, pathB;
 	private Bitmap background, foreground, cropped, oriFore;
 	private int screenWidth, screenHeight;
@@ -69,24 +77,24 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		Paint fgPaint = new Paint();
 		fgPaint.setAlpha(fgAlpha);
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
-				background.getHeight()), new Rect(0, 0, screenWidth,
+				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
 		//foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
-				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
+				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
 	}
 
 	public void render(Canvas canvas, int alpha) {
 		Paint fgPaint = new Paint();
 		fgPaint.setAlpha(alpha);
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
-				background.getHeight()), new Rect(0, 0, screenWidth,
+				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
 		//foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
-				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
+				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
 	}
 
 	private Bitmap cropBitmap() {
@@ -158,10 +166,16 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceCreated(final SurfaceHolder holder) {
 		screenWidth = getWidth();
-		screenHeight = getHeight();
-		background = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathA),
+		screenHeight = getHeight() - PADDING_TOP - PADDING_BOTTOM;
+		background = Bitmap.createScaledBitmap(
+				BitmapTools.decodeSampledBitmapFromFile(pathA, 720, 1280),
 				screenWidth, screenHeight, false);
+<<<<<<< HEAD
 		oriFore = foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
+=======
+		foreground = Bitmap.createScaledBitmap(
+				BitmapTools.decodeSampledBitmapFromFile(pathB, 720, 1280),
+>>>>>>> 60a2c75df25e086641e446452f195f8c17660c9e
 				screenWidth, screenHeight, false);
 		cropped = cropBitmap();
 
@@ -228,6 +242,18 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 			}
 		}
 
+	}
+
+	public void toGray() {
+		background = ImageProcess.toGrayscale(background);
+	}
+
+	public void toYellow() {
+		background = ImageProcess.yellowEffect(background);
+	}
+
+	public void toLomo() {
+		background = ImageProcess.lomoEffect(background);
 	}
 
 }

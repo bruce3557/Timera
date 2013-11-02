@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/pick_background" >
 
     <Button
         android:id="@+id/pick_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        style="@style/PickButtonGallery"
+        android:layout_width="72dp"
+        android:layout_height="84dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="59dp"
-        android:layout_marginTop="86dp"
-        android:text="gallery" />
+        android:layout_marginRight="72dp"
+        android:layout_marginTop="72dp" />
 
     <Button
         android:id="@+id/pick_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/pick_gallery"
-        android:layout_alignBottom="@+id/pick_gallery"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="52dp"
-        android:text="camera" />
+        style="@style/PickButtonCamera"
+        android:layout_width="72dp"
+        android:layout_height="84dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="72dp"
+        android:layout_marginTop="72dp" />
 
     <Button
         android:id="@+id/pick_flickr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/PickButtonFlickr"
+        android:layout_width="72dp"
+        android:layout_height="84dp"
         android:layout_alignLeft="@+id/pick_gallery"
-        android:layout_centerVertical="true"
-        android:text="flickr" />
+        android:layout_below="@+id/pick_gallery"
+        android:layout_marginTop="42dp" />
 
     <Button
         android:id="@+id/pick_nearby"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/pick_flickr"
+        style="@style/PickButtonNearby"
+        android:layout_width="72dp"
+        android:layout_height="84dp"
         android:layout_alignLeft="@+id/pick_camera"
-        android:text="nearby" />
+        android:layout_below="@+id/pick_camera"
+        android:layout_marginTop="42dp" />
 
 </RelativeLayout>

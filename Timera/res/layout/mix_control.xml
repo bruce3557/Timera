@@ -5,76 +5,212 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/mix_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" >
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/mix_control_top"
+        android:gravity="center_vertical" >
 
         <Button
             android:id="@+id/mix_img_a"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="img_a" />
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="28dp"
+            android:background="@drawable/mix_select_press_a" />
 
         <Button
             android:id="@+id/mix_img_b"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="img_b" />
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/mix_select_b" />
+
+        <Button
+            android:id="@+id/mix_img_c"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="38dp"
+            android:background="@drawable/mix_select_c" />
 
         <Button
             android:id="@+id/mix_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="confirm" />
+            style="@style/MixButtonConfirm"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="84dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/mix_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" >
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/mix_control_bottom" >
 
         <Button
             android:id="@+id/mix_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="filter" />
+            android:layout_weight="1"
+            android:background="@drawable/mix_press_fliter" />
 
         <Button
             android:id="@+id/mix_alpha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="alpha" />
+            android:layout_weight="1"
+            android:background="@drawable/mix_alpha" />
 
         <Button
             android:id="@+id/mix_erase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="erase" />
+            android:layout_weight="1"
+            android:background="@drawable/mix_erase" />
 
         <Button
             android:id="@+id/mix_undo"
+            style="@style/MixButtonBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="undo" />
+            android:layout_weight="1" />
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/mix_seekbar_alpha"
+    <LinearLayout
+        android:id="@+id/mix_filter_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout1"
-        android:layout_alignParentLeft="true"
-        android:max="255" />
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/mix_editbar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
 
-    <SeekBar
-        android:id="@+id/mix_seekbar_stroke"
+        <Button
+            android:id="@+id/mix_filter_none"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_filter_circle"
+            android:text="none" />
+
+        <Button
+            android:id="@+id/mix_filter_gray"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_filter_circle"
+            android:text="gray" />
+
+        <Button
+            android:id="@+id/mix_filter_yellow"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_filter_circle"
+            android:text="yell" />
+
+        <Button
+            android:id="@+id/mix_filter_lomo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_filter_circle"
+            android:text="lomo" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mix_alpha_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout1"
-        android:layout_alignParentLeft="true"
-        android:max="300"/>
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/mix_editbar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <SeekBar
+            android:id="@+id/mix_seekbar_alpha"
+            style="@style/AppBaseTheme"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:max="255" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mix_stroke_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/mix_editbar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/mix_stroke_1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_stroke_1" />
+
+        <Button
+            android:id="@+id/mix_stroke_2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_stroke_2" />
+
+        <Button
+            android:id="@+id/mix_stroke_3"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_stroke_3" />
+
+        <Button
+            android:id="@+id/mix_stroke_4"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_stroke_4" />
+
+        <Button
+            android:id="@+id/mix_stroke_5"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/mix_stroke_5" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mix_bottom_shadow"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/mix_control_bottom_shadow" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="46dp"
+        android:src="@drawable/mix_control_top_shadow" />
+
+    <ImageView
+        android:id="@+id/mix_edit_shadow"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="119dp"
+        android:src="@drawable/mix_control_bottom_shadow" />
 
 </RelativeLayout>
