@@ -38,7 +38,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	private Context context;
 	private int selected, mode;
 	private String pathA, pathB;
-	private Bitmap background, foreground, cropped;
+	private Bitmap background, foreground, cropped, oriFore;
 	private int screenWidth, screenHeight;
 	private boolean running;
 	private Thread renderThread;
@@ -71,6 +71,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
+		//foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
@@ -82,6 +83,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
+		//foreground = cropped;
 		canvas.drawBitmap(cropped,
 				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
 				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
@@ -138,8 +140,9 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
 			// blur here
-			Bitmap temp = Bitmap.createBitmap(screenWidth, screenHeight,
-					Config.ARGB_8888);
+			//Bitmap temp = Bitmap.createBitmap(screenWidth, screenHeight,
+			//		Config.ARGB_8888);
+			Bitmap temp = cropBitmap();
 			Canvas tc = new Canvas(temp);
 			render(tc, 255);
 			cropped = ImageProcess.pathGaussianBlur(temp, points, 100);
@@ -158,7 +161,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		screenHeight = getHeight();
 		background = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathA),
 				screenWidth, screenHeight, false);
-		foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
+		oriFore = foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
 				screenWidth, screenHeight, false);
 		cropped = cropBitmap();
 
