@@ -52,6 +52,8 @@ public class PickActivity extends Activity implements OnClickListener {
 			startActivityForResult(intent, REQUEST_CAMERA);
 			break;
 		case R.id.pick_flickr:
+			intent.setClass(PickActivity.this, FlickrActivity.class);
+			startActivityForResult(intent, REQUEST_FLICKR);
 			break;
 		case R.id.pick_nearby:
 			break;
@@ -74,6 +76,10 @@ public class PickActivity extends Activity implements OnClickListener {
 			case REQUEST_CAMERA:
 				intent.putExtra(DATA_PATH,
 						data.getStringExtra(CameraActivity.DATA_PATH));
+				break;
+			case REQUEST_FLICKR:
+				intent.putExtra(DATA_PATH,
+						data.getStringExtra(FlickrActivity.DATA_PATH));
 				break;
 			}
 			setResult(RESULT_OK, intent);
