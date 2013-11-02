@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 public class ImageProcess {
+	public static Thread[] threads = new Thread[10];
 	public static double smoothFunc(double x, double s) {
 		return 1 / (1 + Math.exp(-((x - 0.5) / s)));
 	}
@@ -249,31 +250,105 @@ public class ImageProcess {
         return result;
 	}
 	
+	private static class GaussianThread implements Runnable {
+		Bitmap src, result;
+		int x, y, r;
+		
+		GaussianThread(){}
+		GaussianThread(Bitmap src, Bitmap result, int x, int y, int r) {
+			this.src = src;
+			this.x = x;
+			this.y = y;
+			this.r = r;
+			this.result = result;
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, x, y, r, r), null, r);
+			for(int ta = 0;ta < r;++ta)
+				for(int tb = 0;tb < r; ++tb) {
+					int pix = temp.getPixel(ta, tb);
+					int A = Color.alpha(pix);
+					int R = Color.red(pix);
+					int G = Color.green(pix);
+					int B = Color.blue(pix);
+					result.setPixel(x + ta, y + tb, Color.argb(A, R, G, B));
+				}
+			temp.recycle();
+		}
+		
+	}
+	
 	public static Bitmap pathGaussianBlur(Bitmap src, List<Point> path, int radius) {
 		int width = src.getWidth();
 		int height = src.getHeight();
-		Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
-		int[] pixels = new int[41 * 41];
+		//Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
+		Bitmap result = src.copy(src.getConfig(), true);
+		int r = 6;
+		//int[] pixels = new int[r * r];
 		
 		Log.d(null, "GO!");
 		Log.d(null, "SIZE = " + path.size());
+		//int round = 0;
 		for(Point p : path) {
-			for(int i = -radius - 3; i < radius + 3; ++i) {
-				if(i > -radius + 3 || i < radius - 3)	continue;
-				for(int j = -radius - 3;j < radius + 3; ++j) {
-					if(j < radius - 3 || j > -radius + 3)	continue;
-					//if(i * i + j * j < (radius - 10) * (radius - 10))	continue;
-					int cx = p.x - i;
-					int cy = p.y - j;
-					Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, 20, 20), null, 10);
-					temp.getPixels(pixels, 0, 20, 0, 0, 20, 20);
-					result.setPixels(pixels, 0, 20, cx, cy, 20, 20);
-					//Log.d(null, "EE");
+			int cx = p.x - radius;
+			int cy = p.y - radius;
+			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1), null, r);
+			for(int ta = 0;ta < radius * 2 + 1;++ta)
+				for(int tb = 0;tb < radius * 2 + 1; ++tb) {
+					int pix = temp.getPixel(ta, tb);
+					int A = Color.alpha(pix);
+					int R = Color.red(pix);
+					int G = Color.green(pix);
+					int B = Color.blue(pix);
+					result.setPixel(cx + ta, cy + tb, Color.argb(A, R, G, B));
 				}
-			}
+			/*for(int i = -radius - r; i < -radius + r; ++i) {
+				//if((i > -radius + r) && (i < radius - r))	continue;
+				//Log.d(null, "i: " + i + ", radius: " + radius + ", r: " + r);
+				for(int j = -radius - r;j < radius + r; ++j) {
+					//if((j < radius - r) && (j > -radius + r))	continue;
+					if(i * i + j * j < (radius - r) * (radius - r))	continue;
+					while(round >= 10) {
+						round = 0;
+						for(int a = 0;a < 10; ++a) {
+							try {
+								threads[a].join();
+								threads[a] = null;
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					int cx = p.x + i;
+					int cy = p.y + j;
+					threads[round] = new Thread(new ImageProcess.GaussianThread(src, result, cx, cy, r));
+					threads[round].start();
+					++round;
+					/*
+					Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, r, r), null, r);
+					//Log.d(null, "width: " + temp.getWidth() + ", depth: " + temp.getHeight());
+					//Log.d(null, "cx: " + cx + ", cy: " + cy);
+					//temp.getPixels(pixels, 0, 20, 0, 0, 20, 20);
+					for(int ta = 0;ta < r;++ta)
+						for(int tb = 0;tb < r; ++tb) {
+							int pix = temp.getPixel(ta, tb);
+							int A = Color.alpha(pix);
+							int R = Color.red(pix);
+							int G = Color.green(pix);
+							int B = Color.blue(pix);
+							result.setPixel(cx + ta, cy + tb, Color.argb(A, R, G, B));
+						}
+					*/
+					//result.setPixels(pixels, 0, 20, cx, cy, 20, 20);
+					//Log.d(null, "EE");
+				//}
+			//}
 		}
 		Log.d(null, "OAO!");
-		pixels = null;
 		return result;
 	}
 	
