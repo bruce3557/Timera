@@ -37,31 +37,44 @@
         android:layout_centerHorizontal="true" >
 
         <Button
+            android:id="@+id/mix_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="filter" />
+
+        <Button
+            android:id="@+id/mix_alpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="alpha" />
+
+        <Button
             android:id="@+id/mix_erase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="erase" />
 
         <Button
-            android:id="@+id/mix_scale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="scale" />
-
-        <Button
             android:id="@+id/mix_undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="undo" />
-
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/mix_seekbar"
+        android:id="@+id/mix_seekbar_alpha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentLeft="true"
         android:max="255" />
+
+    <SeekBar
+        android:id="@+id/mix_seekbar_stroke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignParentLeft="true"
+        android:max="300"/>
 
 </RelativeLayout>
