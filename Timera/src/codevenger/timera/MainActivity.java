@@ -3,8 +3,11 @@ package codevenger.timera;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import codevenger.timera.utility.BitmapTools;
@@ -14,7 +17,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final int REQUEST_IMAGE_A = 0;
 	private static final int REQUEST_IMAGE_B = 1;
 
-	private ImageView imgA, imgB;
+	private Button imgA, imgB;
 	private Button confirm;
 	private String pathA, pathB;
 	private boolean pickA, pickB;
@@ -24,8 +27,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		imgA = (ImageView) findViewById(R.id.main_pick_a);
-		imgB = (ImageView) findViewById(R.id.main_pick_b);
+		imgA = (Button) findViewById(R.id.main_pick_a);
+		imgB = (Button) findViewById(R.id.main_pick_b);
 		confirm = (Button) findViewById(R.id.main_confirm);
 
 		imgA.setOnClickListener(this);
@@ -35,6 +38,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		pickA = false;
 		pickB = false;
+
+		Intent intent = new Intent(MainActivity.this, MixActivity.class);
+		intent.putExtra(MixActivity.DATA_PATH_A,
+				"/storage/emulated/0/DCIM/bagshaw_battaile_falls.jpg");
+		intent.putExtra(MixActivity.DATA_PATH_B,
+				"/storage/emulated/0/DCIM/bagshaw_ribbon_of_stone.jpg");
+		startActivity(intent);
+		finish();
 	}
 
 	@Override
@@ -66,14 +77,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			switch (requestCode) {
 			case REQUEST_IMAGE_A:
 				pathA = data.getStringExtra(PickActivity.DATA_PATH);
-				imgA.setImageBitmap(BitmapTools.decodeSampledBitmapFromFile(
-						pathA, 200, 200));
 				pickA = true;
 				break;
 			case REQUEST_IMAGE_B:
 				pathB = data.getStringExtra(PickActivity.DATA_PATH);
-				imgB.setImageBitmap(BitmapTools.decodeSampledBitmapFromFile(
-						pathB, 200, 200));
 				pickB = true;
 				break;
 			default:
@@ -84,4 +91,5 @@ public class MainActivity extends Activity implements OnClickListener {
 			confirm.setVisibility(View.VISIBLE);
 		}
 	}
+
 }

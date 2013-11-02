@@ -92,7 +92,8 @@ public class CameraActivity extends Activity implements OnClickListener,
 
 		String overlayPath = getIntent().getStringExtra(DATA_OVERLAY);
 		if (overlayPath != null) {
-			Bitmap overlay = BitmapFactory.decodeFile(overlayPath);
+			Bitmap overlay = BitmapTools.decodeSampledBitmapFromFile(
+					overlayPath, 720, 1280);
 			overlayImage.setImageBitmap(Bitmap.createScaledBitmap(overlay,
 					screenWidth, screenHeight, false));
 			overlayImage.setAlpha(0.4f);

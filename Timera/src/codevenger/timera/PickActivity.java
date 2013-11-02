@@ -52,8 +52,6 @@ public class PickActivity extends Activity implements OnClickListener {
 			startActivityForResult(intent, REQUEST_CAMERA);
 			break;
 		case R.id.pick_flickr:
-			intent.setClass(PickActivity.this, FlickrActivity.class);
-			startActivity(intent);
 			break;
 		case R.id.pick_nearby:
 			break;

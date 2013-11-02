@@ -17,4 +17,44 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="PickButtonA">
+        <item name="android:background">@drawable/main_pick_a</item>
+    </style>
+
+    <style name="PickButtonB">
+        <item name="android:background">@drawable/main_pick_b</item>
+    </style>
+
+    <style name="PickButtonGallery">
+        <item name="android:background">@drawable/pick_btn_gallery</item>
+    </style>
+
+    <style name="PickButtonCamera">
+        <item name="android:background">@drawable/pick_btn_camera</item>
+    </style>
+
+    <style name="PickButtonFlickr">
+        <item name="android:background">@drawable/pick_btn_flickr</item>
+    </style>
+
+    <style name="PickButtonNearby">
+        <item name="android:background">@drawable/pick_btn_nearby</item>
+    </style>
+
+    <style name="MixButtonConfirm">
+        <item name="android:background">@drawable/mix_btn_confirm</item>
+    </style>
+
+    <style name="MixButtonBack">
+        <item name="android:background">@drawable/mix_btn_back</item>
+    </style>
+
+    <style name="ResultButtonSave">
+        <item name="android:background">@drawable/result_btn_save</item>
+    </style>
+
+    <style name="ResultButtonFlickr">
+        <item name="android:background">@drawable/result_btn_flickr</item>
+    </style>
+
 </resources>

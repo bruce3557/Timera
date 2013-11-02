@@ -10,7 +10,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,7 +19,8 @@
         <activity
             android:name="codevenger.timera.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +29,8 @@
         </activity>
         <activity
             android:name="codevenger.timera.PickActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name="codevenger.timera.CameraActivity"
             android:screenOrientation="portrait" />
@@ -37,9 +39,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="codevenger.timera.ResultActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name="codevenger.timera.FlickrActivity"></activity>
-        <activity android:name="codevenger.timera.FlickrWebActivity"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
     </application>
 
 </manifest>

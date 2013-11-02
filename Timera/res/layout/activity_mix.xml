@@ -9,4 +9,9 @@
         android:layout_height="match_parent"
         layout="@layout/mix_control" />
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/activity_result" />
+
 </RelativeLayout>
