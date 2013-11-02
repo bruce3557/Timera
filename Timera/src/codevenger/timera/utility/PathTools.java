@@ -38,9 +38,9 @@ public class PathTools {
 		File file = new File(
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"Timera");
+				"Timera" + File.separator + "mixed");
 		if (!file.exists()) {
-			file.mkdir();
+			file.mkdirs();
 		}
 	}
 

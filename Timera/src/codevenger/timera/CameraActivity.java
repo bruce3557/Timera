@@ -34,9 +34,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class CameraActivity extends Activity implements OnClickListener,
-		OnTouchListener {
+		OnTouchListener, OnSeekBarChangeListener {
 
 	public static final String DATA_PATH = "path";
 	public static final String DATA_OVERLAY = "overlay";
@@ -45,8 +47,9 @@ public class CameraActivity extends Activity implements OnClickListener,
 	private RelativeLayout cameraLayout;
 	private RelativeLayout controlLayout;
 	private RelativeLayout overlayLayout;
+	private SeekBar alpha, zoom;
 	private Button shoot;
-	private ImageView image;
+	private ImageView overlayImage;
 	private Camera camera;
 	private CameraView cameraView;
 
@@ -66,23 +69,33 @@ public class CameraActivity extends Activity implements OnClickListener,
 		cameraLayout = (RelativeLayout) findViewById(R.id.camera_layout);
 		controlLayout = (RelativeLayout) findViewById(R.id.camera_control);
 		overlayLayout = (RelativeLayout) findViewById(R.id.camera_overlay);
+		alpha = (SeekBar) findViewById(R.id.camera_alpha);
+		zoom = (SeekBar) findViewById(R.id.camera_zoom);
 		shoot = (Button) controlLayout.findViewById(R.id.camera_shoot);
-		image = (ImageView) overlayLayout.findViewById(R.id.camera_image);
+		overlayImage = (ImageView) overlayLayout
+				.findViewById(R.id.camera_image);
 
 		cameraView.setOnTouchListener(this);
 		cameraLayout.addView(cameraView);
 		controlLayout.bringToFront();
 		overlayLayout.bringToFront();
+		alpha.setMax(100);
+		alpha.setProgress(40);
+		alpha.setOnSeekBarChangeListener(this);
+		zoom.setMax(camera.getParameters().getMaxZoom());
+		zoom.setProgress(0);
+		zoom.setOnSeekBarChangeListener(this);
 		shoot.setOnClickListener(this);
 
 		String overlayPath = getIntent().getStringExtra(DATA_OVERLAY);
 		if (overlayPath != null) {
 			Bitmap overlay = BitmapFactory.decodeFile(overlayPath);
-			image.setImageBitmap(Bitmap.createScaledBitmap(overlay,
+			overlayImage.setImageBitmap(Bitmap.createScaledBitmap(overlay,
 					screenWidth, screenHeight, false));
-			image.setAlpha(0.4f);
+			overlayImage.setAlpha(0.4f);
 		} else {
-			image.setVisibility(View.INVISIBLE);
+			overlayImage.setVisibility(View.INVISIBLE);
+			alpha.setVisibility(View.INVISIBLE);
 		}
 	}
 
@@ -142,6 +155,35 @@ public class CameraActivity extends Activity implements OnClickListener,
 	protected void onDestroy() {
 		camera.release();
 		super.onDestroy();
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress,
+			boolean fromUser) {
+		switch (seekBar.getId()) {
+		case R.id.camera_alpha:
+			overlayImage.setAlpha((float) progress / 100);
+			break;
+		case R.id.camera_zoom:
+			Camera.Parameters paras = camera.getParameters();
+			paras.setZoom(progress);
+			camera.setParameters(paras);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
