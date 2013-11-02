@@ -170,12 +170,9 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		background = Bitmap.createScaledBitmap(
 				BitmapTools.decodeSampledBitmapFromFile(pathA, 720, 1280),
 				screenWidth, screenHeight, false);
-<<<<<<< HEAD
-		oriFore = foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
-=======
+
 		foreground = Bitmap.createScaledBitmap(
 				BitmapTools.decodeSampledBitmapFromFile(pathB, 720, 1280),
->>>>>>> 60a2c75df25e086641e446452f195f8c17660c9e
 				screenWidth, screenHeight, false);
 		cropped = cropBitmap();
 
