@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import codevenger.timera.utility.BitmapTools;
+import codevenger.timera.utility.PathTools;
 import codevenger.timera.view.CameraView;
 
 import codevenger.timera.R;
@@ -93,10 +94,7 @@ public class CameraActivity extends Activity implements OnClickListener,
 			public void onPictureTaken(byte[] data, Camera camera) {
 				camera.stopPreview();
 				try {
-					File file = new File(
-							Environment
-									.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-							System.currentTimeMillis() + ".jpg");
+					File file = PathTools.getNewFile();
 					Bitmap bitmap = BitmapTools.rotate(
 							BitmapFactory.decodeByteArray(data, 0, data.length),
 							90);

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mix_control"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" >
+
+        <Button
+            android:id="@+id/mix_img_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="img_a" />
+
+        <Button
+            android:id="@+id/mix_img_b"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="img_b" />
+
+        <Button
+            android:id="@+id/mix_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="confirm" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" >
+
+        <Button
+            android:id="@+id/mix_erase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="erase" />
+
+        <Button
+            android:id="@+id/mix_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scale" />
+
+        <Button
+            android:id="@+id/mix_undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="undo" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/mix_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignParentLeft="true"
+        android:max="255" />
+
+</RelativeLayout>

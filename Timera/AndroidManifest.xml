@@ -7,8 +7,9 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,8 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="codevenger.timera.PickActivity"></activity>
-        <activity android:name="codevenger.timera.CameraActivity"></activity>
+        <activity android:name="codevenger.timera.PickActivity" />
+        <activity android:name="codevenger.timera.CameraActivity" />
+        <activity android:name="codevenger.timera.MixActivity" />
     </application>
 
 </manifest>
