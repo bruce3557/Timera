@@ -55,7 +55,7 @@ public class ImageProcess {
         int h = result.getHeight();
 
         int[] pix = new int[w * h];
-        Log.e("pix", w + " " + h + " " + pix.length);
+        //Log.e("pix", w + " " + h + " " + pix.length);
         result.getPixels(pix, 0, w, 0, 0, w, h);
 
         int wm = w - 1;
@@ -242,8 +242,9 @@ public class ImageProcess {
             }
         }
 
-        Log.e("pix", w + " " + h + " " + pix.length);
+        //Log.e("pix", w + " " + h + " " + pix.length);
         result.setPixels(pix, 0, w, 0, 0, w, h);
+        pix = null;
 
         return result;
 	}
@@ -251,8 +252,28 @@ public class ImageProcess {
 	public static Bitmap pathGaussianBlur(Bitmap src, List<Point> path, int radius) {
 		int width = src.getWidth();
 		int height = src.getHeight();
-		Bitmap result = src.createBitmap(width, height, src.getConfig());
+		Bitmap result = Bitmap.createBitmap(width, height, src.getConfig());
+		int[] pixels = new int[41 * 41];
 		
+		Log.d(null, "GO!");
+		Log.d(null, "SIZE = " + path.size());
+		for(Point p : path) {
+			for(int i = -radius - 3; i < radius + 3; ++i) {
+				if(i > -radius + 3 || i < radius - 3)	continue;
+				for(int j = -radius - 3;j < radius + 3; ++j) {
+					if(j < radius - 3 || j > -radius + 3)	continue;
+					//if(i * i + j * j < (radius - 10) * (radius - 10))	continue;
+					int cx = p.x - i;
+					int cy = p.y - j;
+					Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, 20, 20), null, 10);
+					temp.getPixels(pixels, 0, 20, 0, 0, 20, 20);
+					result.setPixels(pixels, 0, 20, cx, cy, 20, 20);
+					//Log.d(null, "EE");
+				}
+			}
+		}
+		Log.d(null, "OAO!");
+		pixels = null;
 		return result;
 	}
 	

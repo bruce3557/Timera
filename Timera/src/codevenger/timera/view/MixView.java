@@ -104,7 +104,9 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 			// blur here
 			Bitmap bm = Bitmap.createBitmap(screenWidth, screenHeight, Config.ARGB_8888);
 			render(new Canvas(bm));
-			background = ImageProcess.gaussianBlur(background, points, 100);
+			cropped = ImageProcess.pathGaussianBlur(bm, points, 100);
+			//background = ImageProcess.gaussianBlur(background, points, 100);
+			//background = ImageProcess.pathGaussianBlur(background, points, 100);
 			points = null;
 			break;
 		}
@@ -120,6 +122,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		screenHeight = getHeight();
 		background = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathA),
 				screenWidth, screenHeight, false);
+		//background = ImageProcess.gaussianBlur(background, points, 100);
 		foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
 				screenWidth, screenHeight, false);
 		cropped = cropBitmap();
