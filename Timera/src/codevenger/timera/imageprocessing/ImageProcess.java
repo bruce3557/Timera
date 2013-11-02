@@ -3,6 +3,7 @@ package codevenger.timera.imageprocessing;
 import java.util.List;
 
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -15,6 +16,35 @@ public class ImageProcess {
 	public static Thread[] threads = new Thread[10];
 	public static double smoothFunc(double x, double s) {
 		return 1 / (1 + Math.exp(-((x - 0.5) / s)));
+	}
+	
+	public static Bitmap guassianBlurMask(Bitmap src) {
+		int width = src.getWidth();
+        int height = src.getHeight();
+        int blurValue = 1;
+         
+	    BlurMaskFilter blurMaskFilter;
+	    Paint paintBlur = new Paint();
+	      
+	    Bitmap dest = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+	    Canvas canvas = new Canvas(dest); 
+	      
+	    //Create background in White
+	    Bitmap alpha = src.extractAlpha();
+	    paintBlur.setColor(0xFFFFFFFF);
+	    canvas.drawBitmap(alpha, 0, 0, paintBlur);
+	      
+	    //Create outer blur, in White
+	    blurMaskFilter = new BlurMaskFilter(blurValue, BlurMaskFilter.Blur.OUTER);
+	    paintBlur.setMaskFilter(blurMaskFilter);
+	    canvas.drawBitmap(alpha, 0, 0, paintBlur);
+	      
+	    //Create inner blur
+	    blurMaskFilter = new BlurMaskFilter(blurValue, BlurMaskFilter.Blur.INNER);
+	    paintBlur.setMaskFilter(blurMaskFilter);
+	    canvas.drawBitmap(src, 0, 0, paintBlur);
+	     
+	    return dest;
 	}
 	
 	public static Bitmap gaussianBlur(Bitmap src, List<Point> path, int radius) {
@@ -250,37 +280,6 @@ public class ImageProcess {
         return result;
 	}
 	
-	private static class GaussianThread implements Runnable {
-		Bitmap src, result;
-		int x, y, r;
-		
-		GaussianThread(){}
-		GaussianThread(Bitmap src, Bitmap result, int x, int y, int r) {
-			this.src = src;
-			this.x = x;
-			this.y = y;
-			this.r = r;
-			this.result = result;
-		}
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, x, y, r, r), null, r);
-			for(int ta = 0;ta < r;++ta)
-				for(int tb = 0;tb < r; ++tb) {
-					int pix = temp.getPixel(ta, tb);
-					int A = Color.alpha(pix);
-					int R = Color.red(pix);
-					int G = Color.green(pix);
-					int B = Color.blue(pix);
-					result.setPixel(x + ta, y + tb, Color.argb(A, R, G, B));
-				}
-			temp.recycle();
-		}
-		
-	}
-	
 	public static Bitmap pathGaussianBlur(Bitmap src, List<Point> path, int radius) {
 		Bitmap result = src.copy(src.getConfig(), true);
 		int r = 6;
@@ -290,6 +289,7 @@ public class ImageProcess {
 		for(Point p : path) {
 			int cx = p.x - radius;
 			int cy = p.y - radius;
+			//Bitmap temp = guassianBlurMask(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1));
 			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1), null, r);
 			for(int ta = 0;ta < radius * 2 + 1;++ta)
 				for(int tb = 0;tb < radius * 2 + 1; ++tb) {
