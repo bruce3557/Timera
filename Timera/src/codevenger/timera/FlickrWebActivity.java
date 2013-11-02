@@ -34,7 +34,7 @@ public class FlickrWebActivity extends Activity{
 					webView.setVisibility(View.GONE);
 					Uri uri = Uri.parse(url);
 					String verifier = uri.getQueryParameter("oauth_verifier");
-					Log.d("timeraF", uri.getQuery());
+					Log.d("token", uri.getQuery());
 					Intent i=new Intent();
 					Bundle b=new Bundle();
 					b.putString("verifier", verifier);
