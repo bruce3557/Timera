@@ -1,5 +1,8 @@
 package codevenger.timera;
 
+import org.scribe.model.Verifier;
+
+import codevenger.timera.authorization.OAuthFlickrService;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,11 +18,7 @@ public class FlickrWebActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webview);
-		Bundle b = getIntent().getExtras();
-		String url = b.getString("url");
-		Log.d("timera",url);
-		openAuthorizationPage(url);
-		
+		openAuthorizationPage(OAuthFlickrService.authorizationUrl);	
 	}
 	public void openAuthorizationPage(String authorizationUrl) {
 		final WebView webView = (WebView) findViewById(R.id.web_view);
@@ -37,9 +36,8 @@ public class FlickrWebActivity extends Activity{
 					Log.d("token", uri.getQuery());
 					Intent i=new Intent();
 					Bundle b=new Bundle();
-					b.putString("verifier", verifier);
-					i.putExtras(b);
-					setResult(RESULT_OK,i);
+					OAuthFlickrService.verifier = new Verifier(verifier);
+					setResult(RESULT_OK);
 					finish();
 				}
 				return false;

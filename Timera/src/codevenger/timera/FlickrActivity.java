@@ -30,6 +30,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
+import codevenger.timera.authorization.GetPhotoFlickrService;
 import codevenger.timera.authorization.OAuthFlickrService;
 import codevenger.timera.authorization.PhotoInform;
 
@@ -51,7 +52,8 @@ public class FlickrActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_flickr);
-		if (OAuthFlickrService.authorizationUrl == null) {
+
+		if (!OAuthFlickrService.isAthourizeUrl) {
 			OAuthFlickrService flickrService = new OAuthFlickrService();
 			try {
 				flickrService.execute("GetAuthorizationUrl").get();
@@ -65,12 +67,11 @@ public class FlickrActivity extends Activity {
 			url = OAuthFlickrService.authorizationUrl;
 			Log.d("timera", url);
 			Intent intent = new Intent();
-			Bundle b = new Bundle();
-			b.putString("url", url);
-			intent.putExtras(b);
 			intent.setClass(FlickrActivity.this, FlickrWebActivity.class);
 			startActivityForResult(intent, EDIT);
-		} else {
+
+		} else if(!OAuthFlickrService.isAthourizeToken) {
+
 			OAuthFlickrService getAccessToken = new OAuthFlickrService();
 			try {
 				getAccessToken.execute("GetAccessToken").get();
@@ -83,15 +84,45 @@ public class FlickrActivity extends Activity {
 			}
 			decodeJSON();
 			upadteUI();
-
+		}
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case EDIT:
+			OAuthFlickrService getAccessToken = new OAuthFlickrService();
+			try {
+				getAccessToken.execute("GetAccessToken").get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			GetPhotoFlickrService getPhoto = new GetPhotoFlickrService();
+			try {
+				getPhoto.execute().get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			decodeJSON();
+			upadteUI();
 		}
 	}
 
-	public void decodeJSON() {
-		String photos = OAuthFlickrService.photos;
+	public void decodeJSON(){
+
+		String photos = GetPhotoFlickrService.photos;
 		photos = photos.substring(14, photos.length() - 1);
 		try {
 			JSONObject allObject = new JSONObject(photos);
+			Log.d("XD",photos);
 			JSONObject photosObject = allObject.getJSONObject("photos");
 			JSONArray photoArray = photosObject.getJSONArray("photo");
 			String id, owner, title, server, secret;
@@ -107,6 +138,7 @@ public class FlickrActivity extends Activity {
 				secret = oneObject.getString("secret");
 				newPhoto = new PhotoInform(id, owner, title, server, secret,
 						farm);
+
 				photoList.add(newPhoto);
 				urlList.add(newPhoto.getPhotoUrl("m"));
 				Log.d("timera111111", newPhoto.getPhotoUrl());
@@ -294,29 +326,6 @@ public class FlickrActivity extends Activity {
 		protected void onPostExecute(Bitmap result) {
 
 			pd.dismiss();
-		}
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		switch (requestCode) {
-		case EDIT:
-			OAuthFlickrService.verifier = new Verifier(data.getExtras()
-					.getString("verifier"));
-			Log.d("tokenV", data.getExtras().getString("verifier"));
-			OAuthFlickrService getAccessToken = new OAuthFlickrService();
-			try {
-				getAccessToken.execute("GetAccessToken").get();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			decodeJSON();
-			upadteUI();
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package codevenger.timera.authorization;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FlickrApi;
 import org.scribe.model.OAuthRequest;
@@ -18,11 +20,15 @@ public class OAuthFlickrService extends AsyncTask<String, Void, Void> {
 	public static Token requestToken = null;
 	public static Token accessToken = null;
 	public static Verifier verifier = null;
-	private static final String PROTECTED_RESOURCE_URL = "http://api.flickr.com/services/rest/";
+	public static String user_id = null;
+	public static final String PROTECTED_RESOURCE_URL = "http://api.flickr.com/services/rest/";
+	public static boolean isAthourizeUrl = false;
+	public static boolean isAthourizeToken = false;
 	String apiKey = "3f67e9341d6b434434b11f126bd13084";
 	String apiSecret = "0912521631d6c370";
 	String callback = "oauths://Flickr";
-	public static String photos;
+	
+
 	@Override
 	protected Void doInBackground(String... params) {
 		// TODO Auto-generated method stub
@@ -32,21 +38,30 @@ public class OAuthFlickrService extends AsyncTask<String, Void, Void> {
 					.build();
 			Log.d("timera", "service new complete");
 			requestToken = service.getRequestToken();
-			Log.d("timera", "requestToken");
 			OAuthFlickrService.authorizationUrl = service
 					.getAuthorizationUrl(requestToken);
+			isAthourizeUrl = true;
 		} else {
-			Token accessToken = service.getAccessToken(requestToken, verifier);
-			OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
-			request.addQuerystringParameter("method", "flickr.people.getPhotos");
-			request.addQuerystringParameter("user_id", "105673877@N08");
-			request.addQuerystringParameter("format", "json");
-			request.addQuerystringParameter("api_key",
-					"3f67e9341d6b434434b11f126bd13084");
-			service.signRequest(accessToken, request);
-			Response response = request.send();
-			photos = response.getBody();
-			Log.d("timera", photos);
+			accessToken = service.getAccessToken(requestToken, verifier);
+			Log.d("Timera", "service new complete");
+				OAuthRequest request = new OAuthRequest(Verb.GET,
+						PROTECTED_RESOURCE_URL);
+				request.addQuerystringParameter("method", "flickr.test.login");
+				request.addQuerystringParameter("format", "json");
+				service.signRequest(accessToken, request);
+				Response response = request.send();
+				String temp = response.getBody();
+				temp = temp.substring(14, temp.length() - 1);
+				JSONObject allObject;
+				try {
+					allObject = new JSONObject(temp);
+					JSONObject photosObject = allObject.getJSONObject("user");
+					user_id = photosObject.getString("id");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				isAthourizeToken = true;
 		}
 		return null;
 	}
