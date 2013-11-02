@@ -27,23 +27,19 @@ public class MixActivity extends Activity implements OnClickListener,
 
 	public static final String DATA_PATH_A = "pathA";
 	public static final String DATA_PATH_B = "pathB";
-	private static final int MODE_ERASE = 0;
-	private static final int MODE_SCALE = 1;
 
-	private int mode;
 	private MixView mixView;
 	private RelativeLayout mixLayout;
 	private RelativeLayout controlLayout;
 	private Button imgA, imgB, confirm;
-	private Button modeErase, modeScale, undo;
-	private SeekBar seekBar;
+	private Button modeFilter, modeAlpha, modeErase, undo;
+	private SeekBar seekBarAlpha, seekBarStroke;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_mix);
 
-		mode = MODE_ERASE;
 		mixView = new MixView(this, getIntent().getStringExtra(DATA_PATH_A),
 				getIntent().getStringExtra(DATA_PATH_B));
 
@@ -52,21 +48,30 @@ public class MixActivity extends Activity implements OnClickListener,
 		imgA = (Button) controlLayout.findViewById(R.id.mix_img_a);
 		imgB = (Button) controlLayout.findViewById(R.id.mix_img_b);
 		confirm = (Button) controlLayout.findViewById(R.id.mix_confirm);
+		modeFilter = (Button) controlLayout.findViewById(R.id.mix_filter);
+		modeAlpha = (Button) controlLayout.findViewById(R.id.mix_alpha);
 		modeErase = (Button) controlLayout.findViewById(R.id.mix_erase);
-		modeScale = (Button) controlLayout.findViewById(R.id.mix_scale);
 		undo = (Button) controlLayout.findViewById(R.id.mix_undo);
-		seekBar = (SeekBar) controlLayout.findViewById(R.id.mix_seekbar);
+		seekBarAlpha = (SeekBar) controlLayout
+				.findViewById(R.id.mix_seekbar_alpha);
+		seekBarAlpha.setVisibility(View.INVISIBLE);
+		seekBarStroke = (SeekBar) controlLayout
+				.findViewById(R.id.mix_seekbar_stroke);
+		seekBarStroke.setVisibility(View.INVISIBLE);
 		mixLayout.addView(mixView);
 		controlLayout.bringToFront();
 
 		imgA.setOnClickListener(this);
 		imgB.setOnClickListener(this);
 		confirm.setOnClickListener(this);
+		modeFilter.setOnClickListener(this);
+		modeAlpha.setOnClickListener(this);
 		modeErase.setOnClickListener(this);
-		modeScale.setOnClickListener(this);
 		undo.setOnClickListener(this);
-		seekBar.setProgress(200);
-		seekBar.setOnSeekBarChangeListener(this);
+		seekBarAlpha.setProgress(200);
+		seekBarAlpha.setOnSeekBarChangeListener(this);
+		seekBarStroke.setProgress(100);
+		seekBarStroke.setOnSeekBarChangeListener(this);
 	}
 
 	@Override
@@ -102,11 +107,20 @@ public class MixActivity extends Activity implements OnClickListener,
 				e.printStackTrace();
 			}
 			break;
-		case R.id.mix_erase:
-			mode = MODE_ERASE;
+		case R.id.mix_filter:
+			mixView.setMode(MixView.MODE_FILTER);
+			seekBarAlpha.setVisibility(View.INVISIBLE);
+			seekBarStroke.setVisibility(View.INVISIBLE);
 			break;
-		case R.id.mix_scale:
-			mode = MODE_SCALE;
+		case R.id.mix_alpha:
+			mixView.setMode(MixView.MODE_ALPHA);
+			seekBarAlpha.setVisibility(View.VISIBLE);
+			seekBarStroke.setVisibility(View.INVISIBLE);
+			break;
+		case R.id.mix_erase:
+			mixView.setMode(MixView.MODE_ERASE);
+			seekBarAlpha.setVisibility(View.INVISIBLE);
+			seekBarStroke.setVisibility(View.VISIBLE);
 			break;
 		case R.id.mix_undo:
 			mixView.undo();
@@ -117,7 +131,16 @@ public class MixActivity extends Activity implements OnClickListener,
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
-		mixView.setForegroundAlpha(progress);
+		switch (seekBar.getId()) {
+		case R.id.mix_seekbar_alpha:
+			mixView.setForegroundAlpha(progress);
+			break;
+		case R.id.mix_seekbar_stroke:
+			mixView.setStrokeWidth(progress + 20);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override

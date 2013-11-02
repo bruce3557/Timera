@@ -55,6 +55,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			intent.putExtra(MixActivity.DATA_PATH_A, pathA);
 			intent.putExtra(MixActivity.DATA_PATH_B, pathB);
 			startActivity(intent);
+			finish();
 			break;
 		}
 	}

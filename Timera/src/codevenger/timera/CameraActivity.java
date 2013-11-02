@@ -22,9 +22,11 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -65,6 +67,7 @@ public class CameraActivity extends Activity implements OnClickListener,
 		screenHeight = getWindowManager().getDefaultDisplay().getHeight();
 
 		camera = Camera.open();
+		initCameraSize(screenWidth, screenHeight, screenWidth, screenHeight);
 		cameraView = new CameraView(this, camera);
 		cameraLayout = (RelativeLayout) findViewById(R.id.camera_layout);
 		controlLayout = (RelativeLayout) findViewById(R.id.camera_control);
@@ -186,4 +189,38 @@ public class CameraActivity extends Activity implements OnClickListener,
 
 	}
 
+	private void initCameraSize(int pictureWidth, int pictureHeight,
+			int previewWidth, int previewHeight) {
+		Camera.Parameters paras = camera.getParameters();
+		List<Size> pictureSizes = camera.getParameters()
+				.getSupportedPictureSizes();
+		int i;
+		for (i = 1; i < pictureSizes.size(); ++i) {
+			if (pictureSizes.get(i).height < pictureWidth
+					|| pictureSizes.get(i).width < pictureHeight) {
+				Log.e("A",
+						pictureSizes.get(i).height + " "
+								+ pictureSizes.get(i).width + " "
+								+ pictureWidth + " " + pictureHeight);
+				break;
+			}
+		}
+		paras.setPictureSize(pictureSizes.get(i - 1).width,
+				pictureSizes.get(i - 1).height);
+		List<Size> previewSizes = camera.getParameters()
+				.getSupportedPreviewSizes();
+		for (i = 1; i < previewSizes.size(); ++i) {
+			if (previewSizes.get(i).width < previewWidth
+					|| previewSizes.get(i).height < previewHeight) {
+				break;
+			}
+		}
+		paras.setPreviewSize(previewSizes.get(i - 1).width,
+				previewSizes.get(i - 1).height);
+		Log.d("Camera size", "picture: " + paras.getPictureSize().width + "*"
+				+ paras.getPictureSize().height);
+		Log.d("Camera size", "preview: " + paras.getPreviewSize().width + "*"
+				+ paras.getPreviewSize().height);
+		camera.setParameters(paras);
+	}
 }

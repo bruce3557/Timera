@@ -3,11 +3,8 @@ package codevenger.timera.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import codevenger.timera.imageprocessing.ImageProcess;
-
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -29,8 +26,12 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public static final int SELECT_A = 0;
 	public static final int SELECT_B = 1;
+	public static final int MODE_SCALE = 0;
+	public static final int MODE_FILTER = 1;
+	public static final int MODE_ALPHA = 2;
+	public static final int MODE_ERASE = 3;
 
-	private int selected;
+	private int selected, mode;
 	private String pathA, pathB;
 	private Bitmap background, foreground, cropped;
 	private int screenWidth, screenHeight;
@@ -40,14 +41,19 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	private int fgAlpha;
 	private float preX, preY;
 	private List<Path> paths;
+	private List<Integer> strokeWidths;
+	private int strokeWidth;
 	private List<Point> points;
 
 	public MixView(Context context, String imgA, String imgB) {
 		super(context);
 		this.pathA = imgA;
 		this.pathB = imgB;
+		mode = MODE_SCALE;
 		fgAlpha = 200;
+		strokeWidth = 100;
 		paths = new ArrayList<Path>();
+		strokeWidths = new ArrayList<Integer>();
 		points = new ArrayList<Point>();
 		holder = getHolder();
 		holder.addCallback(this);
@@ -70,13 +76,13 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		Paint paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeCap(Paint.Cap.ROUND);
-		paint.setStrokeWidth(100);
 		Canvas bitmapCanvas = new Canvas(croppedBitmap);
 		bitmapCanvas.drawBitmap(foreground, 0, 0, paint);
 		paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 		synchronized (paths) {
-			for (Path path : paths) {
-				bitmapCanvas.drawPath(path, paint);
+			for (int i = 0; i < paths.size(); ++i) {
+				paint.setStrokeWidth(strokeWidths.get(i));
+				bitmapCanvas.drawPath(paths.get(i), paint);
 			}
 		}
 
@@ -91,6 +97,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		case MotionEvent.ACTION_DOWN:
 			paths.add(new Path());
 			paths.get(paths.size() - 1).moveTo(x, y);
+			strokeWidths.add(strokeWidth);
 			points = new ArrayList<Point>();
 			points.add(new Point((int) x, (int) y));
 			break;
@@ -102,11 +109,6 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
 			// blur here
-			Bitmap bm = Bitmap.createBitmap(screenWidth, screenHeight, Config.ARGB_8888);
-			render(new Canvas(bm));
-			cropped = ImageProcess.pathGaussianBlur(bm, points, 100);
-			//background = ImageProcess.gaussianBlur(background, points, 100);
-			//background = ImageProcess.pathGaussianBlur(background, points, 100);
 			points = null;
 			break;
 		}
@@ -122,7 +124,6 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		screenHeight = getHeight();
 		background = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathA),
 				screenWidth, screenHeight, false);
-		//background = ImageProcess.gaussianBlur(background, points, 100);
 		foreground = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(pathB),
 				screenWidth, screenHeight, false);
 		cropped = cropBitmap();
@@ -137,6 +138,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	public void undo() {
 		if (paths.size() > 0) {
 			paths.remove(paths.size() - 1);
+			strokeWidths.remove(strokeWidths.size() - 1);
 		}
 		cropped = cropBitmap();
 	}
@@ -157,8 +159,20 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		fgAlpha = alpha;
 	}
 
+	public void setStrokeWidth(int width) {
+		strokeWidth = width;
+	}
+
 	public void changeSelected(int selected) {
 		this.selected = selected;
+	}
+
+	public int getMode() {
+		return mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
 	}
 
 	private class RenderThread implements Runnable {
