@@ -3,8 +3,11 @@ package codevenger.timera.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import codevenger.timera.imageprocessing.ImageProcess;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -99,14 +102,11 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
 			points.add(new Point((int) x, (int) y));
 			// blur here
-<<<<<<< HEAD
 			Bitmap bm = Bitmap.createBitmap(screenWidth, screenHeight, Config.ARGB_8888);
 			render(new Canvas(bm));
 			cropped = ImageProcess.pathGaussianBlur(bm, points, 100);
 			//background = ImageProcess.gaussianBlur(background, points, 100);
 			//background = ImageProcess.pathGaussianBlur(background, points, 100);
-=======
->>>>>>> 0cfb5475f9cb9981196ce9cfff636225aef8bc2d
 			points = null;
 			break;
 		}
