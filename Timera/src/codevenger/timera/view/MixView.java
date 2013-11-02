@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Paint.Style;
+import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -33,10 +34,10 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	private boolean running;
 	private Thread renderThread;
 	private SurfaceHolder holder;
-	private Canvas canvas;
 	private int fgAlpha;
 	private float preX, preY;
 	private List<Path> paths;
+	private List<Point> points;
 
 	public MixView(Context context, String imgA, String imgB) {
 		super(context);
@@ -44,6 +45,7 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		this.pathB = imgB;
 		fgAlpha = 200;
 		paths = new ArrayList<Path>();
+		points = new ArrayList<Point>();
 		holder = getHolder();
 		holder.addCallback(this);
 	}
@@ -86,12 +88,18 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		case MotionEvent.ACTION_DOWN:
 			paths.add(new Path());
 			paths.get(paths.size() - 1).moveTo(x, y);
+			points = new ArrayList<Point>();
+			points.add(new Point((int) x, (int) y));
 			break;
 		case MotionEvent.ACTION_MOVE:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
+			points.add(new Point((int) x, (int) y));
 			break;
 		case MotionEvent.ACTION_UP:
 			paths.get(paths.size() - 1).quadTo(preX, preY, x, y);
+			points.add(new Point((int) x, (int) y));
+			// blur here
+			points = null;
 			break;
 		}
 		preX = x;
