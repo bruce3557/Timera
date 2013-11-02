@@ -1,7 +1,5 @@
 package codevenger.timera.authorization;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FlickrApi;
 import org.scribe.model.OAuthRequest;
@@ -20,7 +18,6 @@ public class OAuthFlickrService extends AsyncTask<String, Void, Void> {
 	public static Token requestToken = null;
 	public static Token accessToken = null;
 	public static Verifier verifier = null;
-	public static String user_id=null;
 	private static final String PROTECTED_RESOURCE_URL = "http://api.flickr.com/services/rest/";
 	String apiKey = "3f67e9341d6b434434b11f126bd13084";
 	String apiSecret = "0912521631d6c370";
@@ -35,41 +32,14 @@ public class OAuthFlickrService extends AsyncTask<String, Void, Void> {
 					.build();
 			Log.d("timera", "service new complete");
 			requestToken = service.getRequestToken();
-			
+			Log.d("timera", "requestToken");
 			OAuthFlickrService.authorizationUrl = service
 					.getAuthorizationUrl(requestToken);
 		} else {
 			Token accessToken = service.getAccessToken(requestToken, verifier);
-			if(user_id==null){
-				Log.d("HHH","jjj");
-				OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
-				request.addQuerystringParameter("method", "flickr.test.login");
-				request.addQuerystringParameter("format", "json");
-				Log.d("HHH","JJ");
-				service.signRequest(accessToken, request);
-				Response response = request.send();
-				Log.d("HHH","j");
-				String temp = response.getBody();
-				temp = temp.substring(14, temp.length() - 1);
-				Log.d("HHH",temp);
-					JSONObject allObject;
-					try {
-						allObject = new JSONObject(temp);
-						JSONObject photosObject = allObject.getJSONObject("user");
-						user_id = photosObject.getString("id");
-						Log.d("HHH",""+user_id);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				
-			}
-			
-			
 			OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
 			request.addQuerystringParameter("method", "flickr.people.getPhotos");
-			request.addQuerystringParameter("user_id", user_id);
+			request.addQuerystringParameter("user_id", "105673877@N08");
 			request.addQuerystringParameter("format", "json");
 			request.addQuerystringParameter("api_key",
 					"3f67e9341d6b434434b11f126bd13084");

@@ -46,7 +46,6 @@ public class MainActivity extends Activity implements OnClickListener {
 //				"/storage/emulated/0/DCIM/bagshaw_ribbon_of_stone.jpg");
 //		startActivity(intent);
 //		finish();
-
 	}
 
 	@Override

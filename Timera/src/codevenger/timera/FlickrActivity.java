@@ -51,7 +51,7 @@ public class FlickrActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_flickr);
-		if(OAuthFlickrService.authorizationUrl==null){
+		if (OAuthFlickrService.authorizationUrl == null) {
 			OAuthFlickrService flickrService = new OAuthFlickrService();
 			try {
 				flickrService.execute("GetAuthorizationUrl").get();
@@ -70,7 +70,7 @@ public class FlickrActivity extends Activity {
 			intent.putExtras(b);
 			intent.setClass(FlickrActivity.this, FlickrWebActivity.class);
 			startActivityForResult(intent, EDIT);
-		}else{
+		} else {
 			OAuthFlickrService getAccessToken = new OAuthFlickrService();
 			try {
 				getAccessToken.execute("GetAccessToken").get();
@@ -83,10 +83,11 @@ public class FlickrActivity extends Activity {
 			}
 			decodeJSON();
 			upadteUI();
-			
+
 		}
 	}
-	public void decodeJSON(){
+
+	public void decodeJSON() {
 		String photos = OAuthFlickrService.photos;
 		photos = photos.substring(14, photos.length() - 1);
 		try {
@@ -104,8 +105,8 @@ public class FlickrActivity extends Activity {
 				server = oneObject.getString("server");
 				farm = oneObject.getInt("farm");
 				secret = oneObject.getString("secret");
-				newPhoto = new PhotoInform(id, owner, title, server,
-						secret, farm);
+				newPhoto = new PhotoInform(id, owner, title, server, secret,
+						farm);
 				photoList.add(newPhoto);
 				urlList.add(newPhoto.getPhotoUrl("m"));
 				Log.d("timera111111", newPhoto.getPhotoUrl());
@@ -114,7 +115,7 @@ public class FlickrActivity extends Activity {
 		} catch (JSONException e) { // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void upadteUI() {
@@ -303,8 +304,7 @@ public class FlickrActivity extends Activity {
 		case EDIT:
 			OAuthFlickrService.verifier = new Verifier(data.getExtras()
 					.getString("verifier"));
-			Log.d("tokenV", data.getExtras()
-					.getString("verifier"));
+			Log.d("tokenV", data.getExtras().getString("verifier"));
 			OAuthFlickrService getAccessToken = new OAuthFlickrService();
 			try {
 				getAccessToken.execute("GetAccessToken").get();
