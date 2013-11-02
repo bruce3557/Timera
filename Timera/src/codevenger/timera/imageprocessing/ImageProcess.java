@@ -1,7 +1,10 @@
 package codevenger.timera.imageprocessing;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -280,19 +283,41 @@ public class ImageProcess {
         return result;
 	}
 	
+	@SuppressLint("UseValueOf")
 	public static Bitmap pathGaussianBlur(Bitmap src, List<Point> path, int radius) {
+		int width = src.getWidth();
 		Bitmap result = src.copy(src.getConfig(), true);
-		int r = 6;
+		Set<Integer> hash = new HashSet<Integer>();
+		int r = 5;
 		
 		Log.d(null, "GO!");
 		Log.d(null, "SIZE = " + path.size());
-		for(Point p : path) {
+		Point prev = null;
+		for(int i = 0;i < path.size(); ++i) {
+			Point p = path.get(i);
 			int cx = p.x - radius;
 			int cy = p.y - radius;
+			if( hash.contains(new Integer(cx * width + cy) ))	continue;
 			//Bitmap temp = guassianBlurMask(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1));
+			
 			Bitmap temp = gaussianBlur(Bitmap.createBitmap(src, cx, cy, radius * 2 + 1, radius * 2 + 1), null, r);
-			for(int ta = 0;ta < radius * 2 + 1;++ta)
+			for(int ta = 0;ta < radius * 2 + 1; ++ta)
 				for(int tb = 0;tb < radius * 2 + 1; ++tb) {
+					if(hash.contains(new Integer((cx + ta) * width + cy + tb)))	continue;
+					hash.add(new Integer((cx + ta) * width + cy + tb));
+					int nx = cx + ta;
+					int ny = cy + tb;
+					/*
+					int dpx = nx - p.x;
+					int dpy = ny - p.y;
+					int dv = radius * radius;
+					if( dpx * dpx + dpy * dpy <= 0.7 * dv )
+						continue;
+					if(prev != null && (nx - prev.x) * (nx - prev.x) + (ny - prev.y) * (ny - prev.y) < dv && 
+							dpx * dpx + dpy * dpy < dv)
+						continue;
+					*/
+
 					int pix = temp.getPixel(ta, tb);
 					int A = Color.alpha(pix);
 					int R = Color.red(pix);
@@ -300,6 +325,8 @@ public class ImageProcess {
 					int B = Color.blue(pix);
 					result.setPixel(cx + ta, cy + tb, Color.argb(A, R, G, B));
 				}
+			
+			prev = p;
 		}
 		Log.d(null, "OAO!");
 		return result;
