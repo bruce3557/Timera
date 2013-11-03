@@ -5,7 +5,7 @@
     android:background="@drawable/main_background" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/splash_img"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentTop="true"
