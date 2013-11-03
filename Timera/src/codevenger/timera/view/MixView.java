@@ -80,10 +80,14 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
-		if (selected != SELECT_A) {
+		if (selected == SELECT_B) {
 			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
 					cropped.getHeight()), new Rect(0, 0, screenWidth,
 					screenHeight), fgPaint);
+		} else if (selected == SELECT_C) {
+			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
+					cropped.getHeight()), new Rect(0, 0, screenWidth,
+					screenHeight), null);
 		}
 	}
 
@@ -93,10 +97,14 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
-		if (selected != SELECT_A) {
+		if (selected == SELECT_B) {
 			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
 					cropped.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 					screenHeight), fgPaint);
+		} else if (selected == SELECT_C) {
+			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
+					cropped.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
+					screenHeight), null);
 		}
 	}
 
