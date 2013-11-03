@@ -27,6 +27,14 @@ public class SplashActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (step) {
 		case 0:
+			img.setImageResource(R.drawable.splash_second);
+			step++;
+			break;
+		case 1:
+			img.setImageResource(R.drawable.splash_third);
+			step++;
+			break;
+		case 2:
 			Intent intent = new Intent(SplashActivity.this, MainActivity.class);
 			startActivity(intent);
 			finish();
