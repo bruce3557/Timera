@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 		if (pickA && pickB) {
 			confirm.setVisibility(View.VISIBLE);
-			confirm.setAlpha(0.5f);
+			confirm.setAlpha(0.6f);
 			confirm.bringToFront();
 		}
 	}
