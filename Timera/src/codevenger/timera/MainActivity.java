@@ -3,6 +3,7 @@ package codevenger.timera;
 import codevenger.timera.utility.BitmapTools;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,9 +17,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private Button imgA, imgB;
 	private Button confirm;
+	private ImageView simgA, simgB;
 	private ImageView bigA, bigB;
 	private String pathA, pathB;
 	private boolean pickA, pickB;
+	private Bitmap previewA, previewB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		imgA = (Button) findViewById(R.id.main_pick_a);
 		imgB = (Button) findViewById(R.id.main_pick_b);
 		confirm = (Button) findViewById(R.id.main_confirm);
+		simgA = (ImageView) findViewById(R.id.main_simg_a);
+		simgB = (ImageView) findViewById(R.id.main_simg_b);
 		bigA = (ImageView) findViewById(R.id.main_img_a);
 		bigB = (ImageView) findViewById(R.id.main_img_b);
 
@@ -71,16 +76,22 @@ public class MainActivity extends Activity implements OnClickListener {
 			switch (requestCode) {
 			case REQUEST_IMAGE_A:
 				pathA = data.getStringExtra(PickActivity.DATA_PATH);
+				previewA = BitmapTools.decodeSampledBitmapFromFile(pathA, 480,
+						640);
+				simgA.setAlpha(0.6f);
+				simgA.setImageBitmap(previewA);
 				bigA.setAlpha(0.6f);
-				bigA.setImageBitmap(BitmapTools.decodeSampledBitmapFromFile(
-						pathA, 480, 640));
+				bigA.setImageBitmap(previewA);
 				pickA = true;
 				break;
 			case REQUEST_IMAGE_B:
 				pathB = data.getStringExtra(PickActivity.DATA_PATH);
+				previewB = BitmapTools.decodeSampledBitmapFromFile(pathB, 480,
+						640);
+				simgB.setAlpha(0.6f);
+				simgB.setImageBitmap(previewB);
 				bigB.setAlpha(0.6f);
-				bigB.setImageBitmap(BitmapTools.decodeSampledBitmapFromFile(
-						pathB, 480, 640));
+				bigB.setImageBitmap(previewB);
 				pickB = true;
 				break;
 			default:

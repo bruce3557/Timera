@@ -23,6 +23,16 @@
         android:layout_marginRight="48dp"
         android:layout_marginTop="36dp" />
 
+    <ImageView
+        android:id="@+id/main_simg_b"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="48dp"
+        android:layout_marginTop="36dp"
+        android:scaleType="center" />
+
     <Button
         android:id="@+id/main_pick_a"
         style="@style/PickButtonA"
@@ -32,6 +42,16 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="36dp" />
+
+    <ImageView
+        android:id="@+id/main_simg_a"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="36dp"
+        android:scaleType="center" />
 
     <ImageView
         android:id="@+id/imageView2"

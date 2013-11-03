@@ -80,9 +80,11 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, 0, screenWidth,
 				screenHeight), null);
-		canvas.drawBitmap(cropped,
-				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
-				new Rect(0, 0, screenWidth, screenHeight), fgPaint);
+		if (selected != SELECT_A) {
+			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
+					cropped.getHeight()), new Rect(0, 0, screenWidth,
+					screenHeight), fgPaint);
+		}
 	}
 
 	public void render(Canvas canvas) {
@@ -91,20 +93,11 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
 				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
 				screenHeight), null);
-		canvas.drawBitmap(cropped,
-				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
-				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
-	}
-
-	public void render(Canvas canvas, int alpha) {
-		Paint fgPaint = new Paint();
-		fgPaint.setAlpha(alpha);
-		canvas.drawBitmap(background, new Rect(0, 0, background.getWidth(),
-				background.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
-				screenHeight), null);
-		canvas.drawBitmap(cropped,
-				new Rect(0, 0, cropped.getWidth(), cropped.getHeight()),
-				new Rect(0, PADDING_TOP, screenWidth, screenHeight), fgPaint);
+		if (selected != SELECT_A) {
+			canvas.drawBitmap(cropped, new Rect(0, 0, cropped.getWidth(),
+					cropped.getHeight()), new Rect(0, PADDING_TOP, screenWidth,
+					screenHeight), fgPaint);
+		}
 	}
 
 	private Bitmap cropBitmap() {
@@ -226,7 +219,9 @@ public class MixView extends SurfaceView implements SurfaceHolder.Callback,
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		running = false;
-		renderThread.interrupt();
+		if (renderThread != null) {
+			renderThread.interrupt();
+		}
 	}
 
 	public void setForegroundAlpha(int alpha) {

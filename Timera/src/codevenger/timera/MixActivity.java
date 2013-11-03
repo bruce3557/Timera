@@ -9,6 +9,7 @@ import codevenger.timera.utility.PathTools;
 import codevenger.timera.view.MixView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Bitmap.CompressFormat;
@@ -149,8 +150,13 @@ public class MixActivity extends Activity implements OnClickListener,
 				FileOutputStream outputStream = new FileOutputStream(file);
 				output.compress(CompressFormat.JPEG, 100, outputStream);
 				outputStream.close();
-				Toast.makeText(MixActivity.this, "Saved.", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(MixActivity.this, file.getPath() + " saved.",
+						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(MixActivity.this,
+						ResultActivity.class);
+				intent.putExtra(ResultActivity.DATA_PATH,
+						file.getAbsolutePath());
+				startActivity(intent);
 				finish();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
